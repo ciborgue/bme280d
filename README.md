@@ -1,2 +1,1 @@
-# bme280d
-Bosch BME280: Temperature Humidity Barometric Pressure Sensor
+bme280d: Bosch BME280 I2C sensor; temperature, humidity & pressure.
