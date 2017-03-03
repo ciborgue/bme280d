@@ -37,6 +37,7 @@ static void jsonUpdateLoop() {
 			syslog(LOG_ERR, "Can't open JSON file: %s", newFile);
 		} else {
 			fprintf(json, "{%s}\n", r->receiver->toJSON());
+			fsync(fileno(json));
 			fclose(json);
 			rename(newFile, r->jsonFileName->c_str());
 			syslog(LOG_MAKEPRI(LOG_USER, LOG_INFO), "%s", r->receiver->toString());
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
 
 	openlog (semaphore.imgName(),
 			LOG_PERROR|LOG_CONS|LOG_PID|LOG_NDELAY, LOG_USER);
-  syslog(LOG_MAKEPRI(LOG_USER, LOG_INFO), "%s", PACKAGE_STRING);
+	syslog(LOG_MAKEPRI(LOG_USER, LOG_INFO), "%s", PACKAGE_STRING);
 
 	I2CSETUP	i2c;
 
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'j':
 				receivers.push_back(new Receiver(
-							new BME280(i2c), &semaphore, new string(optarg)));
+					new BME280(i2c), &semaphore, new string(optarg)));
 				break;
 			case 'h':
 			default:
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
 	} catch (exception& e) {
 		semaphore.unlock();
 		syslog(LOG_MAKEPRI(LOG_USER, LOG_ERR), "%s", e.what());
+		throw;
 	}
 	return 0;
 }
