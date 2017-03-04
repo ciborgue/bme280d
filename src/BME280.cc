@@ -67,6 +67,7 @@ void BME280::acquireData() {
 #ifdef BME280_DEBUG_LOGGING
 	syslog(LOG_MAKEPRI(LOG_USER, LOG_DEBUG), "acquireData: chip ID is correct");
 #endif
+	waitForStatus();
 
 	// This is chip setup; refer to the original documentation for the values
 	wiringPiI2CWriteReg8(fd, 0xf2, 0x03); // humidity oversampling x4
