@@ -150,12 +150,13 @@ const char *BME280::toString() {
 	strncpy(text, "tm: ", sizeof text);
 
 	int out = strlen(text);
-	strftime(text + out, sizeof text - out, "%FT%TZ", localtime(&tmstamp));
+	strftime(text + out, sizeof text - out,
+			"\"%Y-%m-%d %T %z\"", localtime(&tmstamp));
 
 	out = strlen(text);
 	snprintf(text + out, sizeof text - out,
 		"; ch:%02d; ad:%02X;"
-		" %+.2fC; %.2f%%; %.1fmb",
+		" %+.2f°C; %.2f%%; %.1fmb",
 		i2c.channel, i2c.address,
 		getTemperature(), getHumidity(), getPressure() / 100);
 
@@ -163,12 +164,12 @@ const char *BME280::toString() {
 }
 const char *BME280::toJSON() {
 	snprintf(text, sizeof text,
-		"\"BMA0280%02X%02X\": {\"timestamp\": ",
+		"\"BME0280%02X%02X\": {\"timestamp\": ",
 		i2c.channel, i2c.address);
 
 	int start = strlen(text);
 	strftime(text + start, sizeof text - start,
-			"\"%FT%TZ\"", localtime(&tmstamp));
+			"\"%Y-%m-%d %T %z\"", localtime(&tmstamp));
 
 	start = strlen(text);
 	snprintf(text + start, sizeof text - start,
