@@ -147,7 +147,7 @@ double BME280::getPressure() {
 	return compensate_P();
 }
 const char *BME280::toString() {
-	strncpy(text, "tm: ", sizeof text);
+	strncpy(text, "tm:", sizeof text);
 
 	int out = strlen(text);
 	strftime(text + out, sizeof text - out,
