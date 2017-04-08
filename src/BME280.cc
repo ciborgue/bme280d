@@ -15,6 +15,11 @@
 
 using namespace std;
 
+static const char * const I2C_INTERFACE[] {
+	"/dev/i2c-0",
+	"/dev/i2c-1",
+};
+
 BME280::BME280(I2CSETUP& setup) : i2c(setup) {}
 void BME280::waitForStatus() {
 	for (int i = 0; i < DEFAULT_RETRY_COUNT; i++) {
@@ -54,7 +59,8 @@ void BME280::acquireOnce() {
 #endif
 }
 void BME280::acquireData() {
-	if ((fd = wiringPiI2CSetup(i2c.address)) == -1) {
+	const char * i2cName = I2C_INTERFACE[i2c.channel];
+	if ((fd = wiringPiI2CSetupInterface(i2cName, i2c.address)) == -1) {
 		throw runtime_error("can't open I2C bus");
 	}
 #ifdef BME280_DEBUG_LOGGING
